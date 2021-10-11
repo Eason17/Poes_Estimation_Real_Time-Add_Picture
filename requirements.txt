@@ -1,0 +1,8 @@
+matplotlib
+pyinstaller
+numpy~=1.19.5
+opencv-python~=4.5.3.56
+dlib
+imutils~=0.5.4
+scipy~=1.7.0
+tensorflow~=2.5.0
