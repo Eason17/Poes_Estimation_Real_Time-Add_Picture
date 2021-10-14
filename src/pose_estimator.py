@@ -1,7 +1,3 @@
-"""
-Estimate head pose according to the facial landmarks.
-根据面部标志估计头部姿势.
-"""
 import cv2
 import numpy as np
 import math
@@ -10,7 +6,6 @@ import math
 class PoseEstimator:
     """
     Estimate head pose according to the facial landmarks.
-    根据面部标志估计头部姿势。
     """
 
     def __init__(self, img_size=(480, 640)):
@@ -36,11 +31,9 @@ class PoseEstimator:
              [0, self.focal_length, self.camera_center[1]],
              [0, 0, 1]], dtype="double")
 
-        # Assuming no lens distortion
         # 假设没有镜头畸变，dist_coeefs为畸变系数
         self.dist_coeefs = np.zeros((4, 1))
 
-        # Rotation vector and translation vector
         # 旋转向量和平移向量
         self.r_vec = np.array([[0.01891013], [0.08560084], [-3.14392813]])
         self.t_vec = np.array(
