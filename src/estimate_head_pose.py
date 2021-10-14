@@ -1,11 +1,3 @@
-"""
-演示代码显示如何估计人类头部姿态。
-目前，人脸是由OpenCV DNN模块的检测器检测的。
-然后对人脸框进行了一些修改，以适应标志检测的需要。
-人脸标志的检测是使用经过TensorFlow训练的自定义卷积神经网络完成的。
-然后通过求解一个PnP问题来估计头部姿态。
-
-"""
 from multiprocessing import Process, Queue
 
 import cv2
