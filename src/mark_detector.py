@@ -1,7 +1,3 @@
-"""
-Human facial landmark detector based on Convolutional Neural Network.
-基于卷积神经网络的人脸标志检测器。
-"""
 import cv2
 import numpy as np
 import tensorflow as tf
@@ -163,18 +159,17 @@ class MarkDetector:
     def detect_marks(self, image_np):
         """
         Detect marks from image
-        从图像中检测标记
         """
-        # Get result tensor by its name.  根据它的名字得到结果张量。
+        # 根据它的名字得到结果张量。
         logits_tensor = self.graph.get_tensor_by_name('layer6/final_dense:0')
 
-        # Actual detection.  实际检测。
+        # 实际检测。
         predictions = self.sess.run(
             logits_tensor,
             feed_dict={'image_tensor:0': image_np})
         # print("Actual Detection","\n",predictions)
 
-        # Convert predictions to landmarks.  将预测转换为标志。
+        # 将预测转换为标志。
         marks = np.array(predictions).flatten()[:136]
         marks = np.reshape(marks, (-1, 2))
         # print("Transfer","\n", marks)
