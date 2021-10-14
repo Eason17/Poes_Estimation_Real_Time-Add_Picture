@@ -29,7 +29,6 @@ mark_detector = MarkDetector()
 
 def get_face(img_queue, box_queue):
     """
-    Get face from image queue. This function is used for multiprocessing.
     从图像队列中得到人脸，这个函数用于多处理。
     """
     global mark_detector
@@ -54,7 +53,6 @@ def main(obj):
     kernel = np.ones((3, 3), np.uint8)
     cnt = 0
 
-    # Video source from webcam or video file.
     # 视频来源从网络摄像头或视频文件。
     video_src = args.cam if args.cam is not None else args.video
     if video_src is None:
@@ -65,7 +63,6 @@ def main(obj):
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # 设置分辨率
     _, sample_frame = cap.read()  # 返回布尔值和帧
 
-    # Setup process and queues for multiprocessing.
     # 为多处理设置进程和队列。
     img_queue = Queue()
     box_queue = Queue()
@@ -74,12 +71,10 @@ def main(obj):
     # 启动一个进程，运行get_face函数，传入参数mark_detector, img_queue, box_queue。
     box_process.start()
 
-    # Introduce pose estimator to solve pose. Get one frame to setup the estimator according to the image size.
     # 引入位姿估计器求解位姿，获得一帧来根据图像大小设置估计器。
     height, width = sample_frame.shape[:2]
     pose_estimator = PoseEstimator(img_size=(height, width))
 
-    # Introduce scalar stabilizers for pose.
     # 为姿态引入标量稳定器。
     pose_stabilizers = [Stabilizer(
         state_num=2,
@@ -90,33 +85,18 @@ def main(obj):
     tm = cv2.TickMeter()  # 设置计时器。
 
     while True:
-        # Read frame, crop it, flip it, suits your needs.
         # 读取帧，剪裁，翻转，以适合你的需要。
         frame_got, frame = cap.read()  # frame_got为布尔值,frame为每一帧.
         if frame_got is False:
             break
 
-        # Crop it if frame is larger than expected.  如果帧比预期的大，就进行裁剪。
-        # frame = frame[0:480, 300:940]
-
-        # If frame comes from webcam, flip it so it looks like a mirror.
-        # 如果帧来自网络摄像头，翻转它，使它看起来像一面镜子。
         if video_src == 0:
             frame = cv2.flip(frame, 2)
 
-        # Pose estimation by 3 steps:
-        # 1. detect face;
-        # 2. detect landmarks;
-        # 3. estimate pose
-
-        # Feed frame to image queue.
         img_queue.put(frame)
-
-        # Get face from box queue.
         facebox = box_queue.get()
 
         if facebox is not None:
-            # Detect landmarks from image of 128x128.
             # 从128x128的图像中检测标志。
             face_img = frame[facebox[1]: facebox[3],
                        facebox[0]: facebox[2]]
@@ -246,13 +226,10 @@ def main(obj):
             if cv2.waitKey(10) == 27:
                 break
 
-    # Clean up the multiprocessing process.
-    # 清除多处理过程。
     box_process.terminate()
     box_process.join()
 
 
 if __name__ == '__main__':
     args = args()
-    # add_glasses(obj)
     main(obj)
